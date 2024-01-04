@@ -15,8 +15,11 @@ contacts = {}
 
 @input_error
 def add_contact(name, phone):
-    contacts[name] = phone
-    return f"Contact {name} added successfully."
+    if name in contacts:
+        raise ValueError(f"Contact {name} already exists.")
+    else:
+        contacts[name] = phone
+        return f"Contact {name} added successfully."
 
 @input_error
 def change_phone(name, new_phone):
@@ -43,25 +46,29 @@ def show_all_contacts():
 
 
 def main():
-    while True:
-        command = input("Enter a command: ").lower()
+    command_functions = {
+        "hello": lambda: print("How can I help you?"),
+        "add": lambda name, phone: print(add_contact(name, phone)) if len(command) == 3 else print("Invalid command. Please try again."),
+        "change": lambda name, new_phone: print(change_phone(name, new_phone)) if len(command) == 3 else print("Invalid command. Please try again."),
+        "phone": lambda *args: print(get_phone(*args)) if len(args) == 1 else print("Invalid command. Please try again."),
+        "show": lambda *args: print(show_all_contacts()) if len(args) == 1 and args[0] == "all" else print("Invalid command. Please try again."),
+        "goodbye": lambda: print("Goodbye!") or exit(),
+        "close": lambda: print("Goodbye!") or exit(),
+        "exit": lambda: print("Goodbye!") or exit(),
+        ".": lambda: print("Goodbye!") or exit(),
+    }
 
-        if command == "hello":
-            print("How can I help you?")
-        elif command.startswith("add"):
-            _, name, phone = command.split()
-            print(add_contact(name, phone))
-        elif command.startswith("change"):
-            _, name, new_phone = command.split()
-            print(change_phone(name, new_phone))
-        elif command.startswith("phone"):
-            _, name = command.split()
-            print(get_phone(name))
-        elif command == "show all":
-            print(show_all_contacts())
-        elif command in ["good bye", "close", "exit", "."]:
-            print("Good bye!")
-            break
+    while True:
+        command = input("Enter a command: ").lower().split()
+
+        if not command:
+            print("Invalid command. Please try again.")
+            continue
+
+        action = command[0]
+
+        if action in command_functions:
+            command_functions[action](*command[1:])
         else:
             print("Invalid command. Please try again.")
 
