@@ -13,6 +13,7 @@ def input_error(func):
 
 contacts = {}
 
+
 @input_error
 def add_contact(name, phone):
     if name in contacts:
@@ -20,6 +21,7 @@ def add_contact(name, phone):
     else:
         contacts[name] = phone
         return f"Contact {name} added successfully."
+
 
 @input_error
 def change_phone(name, new_phone):
@@ -29,12 +31,14 @@ def change_phone(name, new_phone):
     else:
         raise KeyError(name)
 
+
 @input_error
 def get_phone(name):
     if name in contacts:
         return f"The phone number for {name} is {contacts[name]}."
     else:
         raise KeyError(name)
+
 
 @input_error
 def show_all_contacts():
